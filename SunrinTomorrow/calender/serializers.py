@@ -4,7 +4,7 @@ from .models import Schedules, Events, AllData, Summary, Update_data
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
-        fields = ['year', 'month', 'day', 'week']
+        fields = ['year', 'month', 'week', 'day']
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
