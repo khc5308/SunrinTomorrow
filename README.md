@@ -11,7 +11,7 @@ GET /schedules?year={year}&month={month}&week={week}
 GET /schedules?year={year}&month={month}
 
 이번달 휴일
-GET /holidays?year={year}&month={month}
+GET /events/holidays?year={year}&month={month}
 
 올해 시험
 GET /events/test?year={year}
@@ -23,7 +23,7 @@ GET /events/festival?year={year}
 GET /summary/class-days?grade={grade}
 
 이번달 정보
-GET /all/month?month={month}
+GET /all/month?year={year}&month={month}
 
 이번년 정보
 GET /all/year?year={year}
@@ -33,7 +33,7 @@ GET /d-day/{event_name}
 # test, festival, holidays
 
 데이터 수정
-GET /putData?year={year}&month={month}&week={week}
+GET /putData?year={year}&month={month}&day={day}
 
 전체 데이터 수정
 /update
