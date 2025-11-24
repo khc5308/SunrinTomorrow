@@ -24,3 +24,5 @@ class Update_data(models.Model):
     year = models.IntegerField()
     month = models.IntegerField()
     day = models.IntegerField()
+    title = models.CharField(max_length=100)
+    name = models.TextField()
