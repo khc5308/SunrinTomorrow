@@ -1,42 +1,33 @@
 # SunrinTomorrow
 
+전체 학사일정 업데이트
+```
+'update-data/'
 ```
 
-오늘 스케쥴
-GET /schedules?year={year}&month={month}&day={day}
+시험/축제/휴일에 남은 시간
+```
+'d-day/tests/'
+'d-day/festivals/'
+'d-day/holidays/'
+```
 
-주간 스케쥴
-GET /schedules?year={year}&month={month}&week={week}
+연/월/일의 스케쥴 GET
+```
+'schedules/<int:year>/'
+'schedules/<int:year>/<int:month>/'
+'schedules/<int:year>/<int:month>/<int:day>/'
+```
 
-월간 스케쥴
-GET /schedules?year={year}&month={month}
+해당 연도의 시험/축제/휴일/전체
+```
+'schedules/tests/<int:year>/'
+'schedules/festivals/<int:year>/'
+'schedules/holidays/<int:year>/'
+'schedules/<int:year>/'
+```
 
-이번달 휴일
-GET /events/holidays?year={year}&month={month}
-
-올해 시험
-GET /events/test?year={year}
-
-올해 축제
-GET /events/festival?year={year}
-
-수업 일수
-GET /summary/class-days?grade={grade}
-
-이번달 정보
-GET /all/month?year={year}&month={month}
-
-이번년 정보
-GET /all/year?year={year}
-
-D-day
-GET /d-day/{event_name}
-# test, festival, holidays
-
-데이터 수정
-GET /putData?year={year}&month={month}&day={day}
-
-전체 데이터 수정
-/update
-
+연/월의 휴일
+```
+'schedules/holidays/<int:year>/<int:month>/'
 ```

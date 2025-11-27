@@ -15,6 +15,7 @@ urlpatterns = [
     path('schedules/tests/<int:year>/', views.GetTests.as_view()),
     path('schedules/festivals/<int:year>/', views.GetFestivals.as_view()),
     path('schedules/holidays/<int:year>/', views.GetHolidays.as_view()),
+    path('schedules/<int:year>/', views.GetAlldays.as_view()),
     
     path('schedules/holidays/<int:year>/<int:month>/', views.GetHolidays.as_view()),
 

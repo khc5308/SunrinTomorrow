@@ -79,6 +79,9 @@ class GetFestivals(BaseEventListView):
 class GetHolidays(BaseEventListView):
     event_title = "holidays"
 
+class GetAlldays(BaseEventListView):
+    event_title = None
+
 
 class GetSummaryClassDays(generics.RetrieveAPIView):
     """
