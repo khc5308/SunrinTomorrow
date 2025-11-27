@@ -24,7 +24,6 @@
 'schedules/tests/<int:year>/'
 'schedules/festivals/<int:year>/'
 'schedules/holidays/<int:year>/'
-'schedules/<int:year>/'
 ```
 
 연/월의 휴일

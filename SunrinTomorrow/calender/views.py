@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from .models import Schedules, Summary
 from .serializers import ScheduleSerializer, SummarySerializer
 
+@api_view(['GET'])
+def main(request):
+    return Response({"message": "Hello"}, status=status.HTTP_200_OK)
+
 
 class GetSchedules(generics.ListAPIView):
     serializer_class = ScheduleSerializer
@@ -63,9 +67,6 @@ class GetFestivals(BaseEventListView):
 
 class GetHolidays(BaseEventListView):
     event_title = "holidays"
-
-class GetAlldays(BaseEventListView):
-    event_title = None
 
 class UpdateSchedule(generics.RetrieveUpdateAPIView):
     queryset = Schedules.objects.all()
