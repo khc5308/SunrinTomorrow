@@ -1,142 +1,180 @@
 import csv
-from django.shortcuts import render
-from rest_framework import generics
+import datetime
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.views import APIView
+from .models import Schedules, Summary
+from .serializers import ScheduleSerializer, SummarySerializer
 
-from .models import Schedules, Events, Summary, Update_data, AllData
-from .serializers import ScheduleSerializer, EventSerializer, AllDataSerializer, SummarySerializer, UpdateDataSerializer
 
-import datetime
-
-class get_schedules(generics.ListAPIView):
+class GetSchedules(generics.ListAPIView):
+    """
+    특정 연/월/일의 스케줄을 조회합니다.
+    URL 예시: /schedules/<year>/<month>/<day>/
+    """
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
-        year = self.kwargs['year']
-        month = self.kwargs['month']
-        if self.kwargs.get('week') is None:
-            return Schedules.objects.filter(year=year, month=month)
-        else:
-            week = self.kwargs['week']
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        day = self.kwargs.get('day')
         
-        if day is None:
-            return Schedules.objects.filter(year=year, month=month, week=week)
-        else:
-            day = self.kwargs['day']
-        return Schedules.objects.filter(year=year, month=month, week=week, day=day)
-    
+        queryset = Schedules.objects.filter(year=year, month=month)
+        
+        if day:
+            queryset = queryset.filter(day=day)
+            
+        return queryset
+
+class GetAllYear(generics.ListAPIView):
+    """
+    특정 연도의 모든 스케줄을 조회합니다.
+    URL 예시: /schedules/<year>/
+    """
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        year = self.kwargs.get('year')
+        return Schedules.objects.filter(year=year)
+
+class GetAllMonth(generics.ListAPIView):
+    """
+    특정 연도와 월의 모든 스케줄을 조회합니다.
+    URL 예시: /schedules/<year>/<month>/
+    """
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        return Schedules.objects.filter(year=year, month=month)
+
+
 class BaseEventListView(generics.ListAPIView):
-    serializer_class = EventSerializer
+    """
+    특정 타이틀(행사 종류)을 가진 스케줄을 필터링하는 베이스 클래스
+    """
+    serializer_class = ScheduleSerializer
     event_title = None
 
     def get_queryset(self):
-        year = self.kwargs['year']
-        return Events.objects.filter(
-            year=year,
-            title=self.event_title
-            # 이거 각각 클래스로 할거면
-            # title = 'AJR' 이렇게 고정해도됨
-        )
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
 
-class get_tests(BaseEventListView):
+        queryset = Schedules.objects.filter(year=year, title=self.event_title)
+        
+        if month:
+            queryset = queryset.filter(month=month)
+            
+        return queryset
+
+class GetTests(BaseEventListView):
     event_title = "test"
 
-class get_festivals(BaseEventListView):
+class GetFestivals(BaseEventListView):
     event_title = "festival"
 
-class get_holidays(BaseEventListView):
-    event_title = "holiday"
+class GetHolidays(BaseEventListView):
+    event_title = "holidays"
 
-    def get(self):
-        year = self.kwargs['year']
-        month = self.kwargs['month']
-        return Events.objects.filter(
-            year=year,
-            month=month,
-            title=self.event_title
-        )
-    
-class get_summary_class_days(generics.RetrieveAPIView):
+
+class GetSummaryClassDays(generics.RetrieveAPIView):
+    """
+    학년(grade)을 기준으로 Summary를 조회합니다.
+    URL 예시: /summary/<int:grade>/
+    """
     queryset = Summary.objects.all()
     serializer_class = SummarySerializer
     lookup_field = 'grade'
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-class get_all_month(generics.ListAPIView):
-    queryset = AllData.objects.all()
-    serializer_class = AllDataSerializer
+class UpdateSchedule(generics.RetrieveUpdateAPIView):
+    """
+    특정 스케줄 하나를 수정합니다. (PUT/PATCH)
+    URL 예시: /schedule/update/<int:pk>/
+    """
+    queryset = Schedules.objects.all()
+    serializer_class = ScheduleSerializer
 
-    def get(self):
-        return self.list(self)
 
-class get_all_year(generics.ListAPIView):
-    queryset = AllData.objects.all()
-    serializer_class = AllDataSerializer
+class BaseDDay(APIView):
+    event_title = None
 
-    def get(self):
-        return self.list(self)
+    def get(self, request):
+        today = datetime.date.today()
+        
+        if self.event_title:
+            candidates = Schedules.objects.filter(year__gte=today.year, title=self.event_title)
+        else:
+            candidates = Schedules.objects.filter(year__gte=today.year)
 
-class get_summary_class_days(generics.RetrieveAPIView):
-    queryset = Summary.objects.all()
-    serializer_class = SummarySerializer
-    lookup_field = 'grade'
+        upcoming_events = []
+        
+        for schedule in candidates:
+            try:
+                event_date = datetime.date(schedule.year, schedule.month, schedule.day)
+                
+                if event_date >= today:
+                    days_left = (event_date - today).days
+                    upcoming_events.append({
+                        'name': schedule.name,
+                        'date': event_date,
+                        'd-day': days_left
+                    })
+            except ValueError:
+                continue
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        if not upcoming_events:
+            return Response({'message': '예정된 일정이 없습니다.'}, status=status.HTTP_200_OK)
 
-class get_all_month(generics.ListAPIView):
-    queryset = AllData.objects.all()
-    serializer_class = AllDataSerializer
-    lookup_field = 'month'
+        upcoming_events.sort(key=lambda x: x['d-day'])
+        
+        nearest_event = upcoming_events[0]
+        
+        return Response(nearest_event, status=status.HTTP_200_OK)
 
-    def get(self):
-        return self.list(self)
+class DDayTests(BaseDDay):
+    event_title = "test"
+class DDayFestivals(BaseDDay):
+    event_title = "festival"
+class DDayHolidays(BaseDDay):
+    event_title = "holidays"
 
-class get_all_year(generics.ListAPIView):
-    queryset = AllData.objects.all()
-    serializer_class = AllDataSerializer
-    lookup_field = 'year'
-
-    def get(self):
-        return self.list(self)
-
-class put_data(generics.UpdateAPIView):
-    queryset = Update_data.objects.all()
-    serializer_class = UpdateDataSerializer
-
-    def update(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-@api_view(['GET'])
-def d_day(request):
-    if request.method == 'GET':
-        now = datetime.datetime.now()
-        for i in Events.objects.all():
-            if i.year >= now.year and i.month >= now.month:
-                event_date = datetime.datetime(i.year, i.month, 1)
-                delta = event_date - now
-                return Response({'d-day': delta.days}, status=status.HTTP_200_OK)
-            
 @api_view(['POST'])
 def update_data(request):
-    if request.method == 'POST':
+    try:
         with open("calender/data.csv", "r", encoding="utf-8") as f:
             data = csv.DictReader(f)
+            
+            Schedules.objects.all().delete()
+            
+            count = 0
             for item in data:
-                year = item['date'][:4]
-                month = item['date'][4:6]
-                day = item['date'][6:]
-                title = item['title']
-                name = item['name']
-                obj, created = Update_data.objects.create(
+                date_str = item['date'].strip()
+                year = int(date_str[:4])
+                month = int(date_str[4:6])
+                day = int(date_str[6:])
+                
+                title = item['title'].strip()
+                name = item['name'].strip()
+                
+                
+                dt = datetime.date(year, month, day)
+                week = dt.isocalendar()[1]
+
+                Schedules.objects.create(
                     year=year,
                     month=month,
                     day=day,
+                    week=week,
                     title=title,
                     name=name
                 )
-        return Response({'message': 'Data updated successfully'}, status=status.HTTP_200_OK)
+                count += 1
+            
+        return Response({'message': f' {count}개의 데이터 생성'}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

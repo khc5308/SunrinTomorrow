@@ -1,15 +1,22 @@
+# urls.py 예시
 from django.urls import path
-from .views import get_schedules, get_holidays, get_tests, get_festivals, get_summary_class_days, get_all_month, put_data, update_data
+from . import views
 
 urlpatterns = [
-    path('schedules', get_schedules.as_view()),
-    path('events/holidays', get_holidays.as_view()),
-    path('events/test', get_tests.as_view()),
-    path('events/festivals', get_festivals.as_view()),
-    path('summary/class-days', get_summary_class_days.as_view()),
-    path('all/month', get_all_month.as_view()),
-    path('all/year', get_all_month.as_view()),
-    path('d-day', get_all_month.as_view()),
-    path('putData', put_data.as_view()),
-    path('update', update_data),
+    path('update-data/', views.update_data),
+    path('d-day/tests/', views.DDayTests.as_view()),
+    path('d-day/festivals/', views.DDayFestivals.as_view()),
+    path('d-day/holidays/', views.DDayHolidays.as_view()),
+
+    path('schedules/<int:year>/', views.GetAllYear.as_view()),
+    path('schedules/<int:year>/<int:month>/', views.GetAllMonth.as_view()),
+    path('schedules/<int:year>/<int:month>/<int:day>/', views.GetSchedules.as_view()),
+
+    path('schedules/tests/<int:year>/', views.GetTests.as_view()),
+    path('schedules/festivals/<int:year>/', views.GetFestivals.as_view()),
+    path('schedules/holidays/<int:year>/', views.GetHolidays.as_view()),
+    
+    path('schedules/holidays/<int:year>/<int:month>/', views.GetHolidays.as_view()),
+
+    #path('summary/<int:grade>/', views.GetSummaryClassDays.as_view()),
 ]

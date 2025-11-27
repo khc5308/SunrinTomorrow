@@ -1,27 +1,12 @@
 from rest_framework import serializers
-from .models import Schedules, Events, AllData, Summary, Update_data
+from .models import Schedules,Summary
 
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
-        fields = ['year', 'month', 'week', 'day']
-
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Events
-        fields = ['title', 'year', 'month']
-    
-class AllDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AllData
-        fields = ['year', 'month']
+        fields = ['year', 'month', 'week', 'day', 'title', 'name']
 
 class SummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Summary
         fields = ['grade']
-
-class UpdateDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Update_data
-        fields = ['year', 'month', 'day']
