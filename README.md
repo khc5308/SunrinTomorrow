@@ -1,5 +1,5 @@
 # SunrinTomorrow
-## 1. 환경 설정 및 실행
+## 1. 환경 설정 및 실행 
 ```
 python -m venv venv
 .\venv\Scripts\activate
@@ -7,7 +7,7 @@ pip install -r requirements.txt
 cd SunrinTomorrow
 python manage.py runserver
 ```
----
+
 ## 2. EndPoint
 
 ### 전체 학사일정 업데이트
@@ -26,12 +26,12 @@ python manage.py runserver
 
 ### 카테고리별 일정
 
-- `GET | schedules/tests/<int:year>/`
-- `GET | schedules/festivals/<int:year>/`
-- `GET | schedules/holidays/<int:year>/`
-- `GET | schedules/holidays/<int:year>/<int:month>/`
+- 모든 시험 `GET | schedules/tests/<int:year>/`
+- 모든 축제 `GET | schedules/festivals/<int:year>/`
+- 모든 휴일 `GET | schedules/holidays/<int:year>/`
+- 월별 휴일 `GET | schedules/holidays/<int:year>/<int:month>/`
 
----
+
 ## 3. AI
 ### .env
 ```
@@ -41,3 +41,8 @@ GEMINI_API_KEY = "AI뭐시기~~"
 image.png에 있는 학사일정을 csv로 저장합니다.
 
 결과물은 .\SunrinTomorrow\calender\data.csv에 저장됩니다
+
+## 4. 기타
+API Docs : [Sunrin Tomorrow swagger]((http://sunrintomorrow.kro.kr/))
+
+By 김해찬, 최장환 for 서버 수행
