@@ -1,17 +1,16 @@
 import csv
 import datetime
-from django.shortcuts import get_object_or_404
+from .models import Schedules
+from .serializers import ScheduleSerializer
+
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Schedules, Summary
-from .serializers import ScheduleSerializer, SummarySerializer
 
 @api_view(['GET'])
 def main(request):
     return Response({"message": "Hello"}, status=status.HTTP_200_OK)
-
 
 class GetSchedules(generics.ListAPIView):
     serializer_class = ScheduleSerializer
@@ -21,28 +20,15 @@ class GetSchedules(generics.ListAPIView):
         month = self.kwargs.get('month')
         day = self.kwargs.get('day')
         
-        queryset = Schedules.objects.filter(year=year, month=month)
+        queryset = Schedules.objects.filter(year=year)
         
+        if month:
+            queryset = queryset.filter(month=month)
         if day:
             queryset = queryset.filter(day=day)
+
             
         return queryset
-
-class GetAllYear(generics.ListAPIView):
-    serializer_class = ScheduleSerializer
-
-    def get_queryset(self):
-        year = self.kwargs.get('year')
-        return Schedules.objects.filter(year=year)
-
-class GetAllMonth(generics.ListAPIView):
-    serializer_class = ScheduleSerializer
-
-    def get_queryset(self):
-        year = self.kwargs.get('year')
-        month = self.kwargs.get('month')
-        return Schedules.objects.filter(year=year, month=month)
-
 
 class BaseEventListView(generics.ListAPIView):
     serializer_class = ScheduleSerializer
@@ -67,11 +53,6 @@ class GetFestivals(BaseEventListView):
 
 class GetHolidays(BaseEventListView):
     event_title = "holidays"
-
-class UpdateSchedule(generics.RetrieveUpdateAPIView):
-    queryset = Schedules.objects.all()
-    serializer_class = ScheduleSerializer
-
 
 class BaseDDay(APIView):
     event_title = None

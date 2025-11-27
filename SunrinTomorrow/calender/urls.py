@@ -1,24 +1,21 @@
-# urls.py 예시
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('',views.main),
+    path('',main),
 
-    path('update-data/', views.update_data),
-    path('d-day/tests/', views.DDayTests.as_view()),
-    path('d-day/festivals/', views.DDayFestivals.as_view()),
-    path('d-day/holidays/', views.DDayHolidays.as_view()),
+    path('update-data/', update_data),
+    path('d-day/tests/', DDayTests.as_view()),
+    path('d-day/festivals/', DDayFestivals.as_view()),
+    path('d-day/holidays/', DDayHolidays.as_view()),
 
-    path('schedules/<int:year>/', views.GetAllYear.as_view()),
-    path('schedules/<int:year>/<int:month>/', views.GetAllMonth.as_view()),
-    path('schedules/<int:year>/<int:month>/<int:day>/', views.GetSchedules.as_view()),
+    path('schedules/<int:year>/', GetSchedules.as_view()),
+    path('schedules/<int:year>/<int:month>/', GetSchedules.as_view()),
+    path('schedules/<int:year>/<int:month>/<int:day>/', GetSchedules.as_view()),
 
-    path('schedules/tests/<int:year>/', views.GetTests.as_view()),
-    path('schedules/festivals/<int:year>/', views.GetFestivals.as_view()),
-    path('schedules/holidays/<int:year>/', views.GetHolidays.as_view()),
+    path('schedules/tests/<int:year>/', GetTests.as_view()),
+    path('schedules/festivals/<int:year>/', GetFestivals.as_view()),
+    path('schedules/holidays/<int:year>/', GetHolidays.as_view()),
     
-    path('schedules/holidays/<int:year>/<int:month>/', views.GetHolidays.as_view()),
-
-    #path('summary/<int:grade>/', views.GetSummaryClassDays.as_view()),
+    path('schedules/holidays/<int:year>/<int:month>/', GetHolidays.as_view()),
 ]

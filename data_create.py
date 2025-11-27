@@ -34,5 +34,5 @@ def getCSV_text(path:str):
     except Exception as e:
         return f"API 요청 중 오류 발생: {e}"
     
-with open("output.csv", "w", encoding="utf-8") as f:
-    f.write(getCSV_text("sample_image.png"))
+with open("SunrinTomorrow\calender\data.csv", "w", encoding="utf-8") as f:
+    f.write(getCSV_text("image.png"))
