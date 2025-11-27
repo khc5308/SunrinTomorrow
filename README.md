@@ -1,4 +1,11 @@
 # SunrinTomorrow
+## 0. 소개
+SunrinTomorrow는 서버 수행평가용으로 제작된
+선린인터넷고등학교 학사 일정 API입니다.
+다양한 형태로 가공된 학사일정을 받을 수 있습니다.
+
+배포는 되어있지 않습니다.
+
 ## 1. 환경 설정 및 실행 
 ```
 python -m venv venv
