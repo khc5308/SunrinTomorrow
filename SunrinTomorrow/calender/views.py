@@ -10,10 +10,6 @@ from .serializers import ScheduleSerializer, SummarySerializer
 
 
 class GetSchedules(generics.ListAPIView):
-    """
-    특정 연/월/일의 스케줄을 조회합니다.
-    URL 예시: /schedules/<year>/<month>/<day>/
-    """
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
@@ -29,10 +25,6 @@ class GetSchedules(generics.ListAPIView):
         return queryset
 
 class GetAllYear(generics.ListAPIView):
-    """
-    특정 연도의 모든 스케줄을 조회합니다.
-    URL 예시: /schedules/<year>/
-    """
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
@@ -40,10 +32,6 @@ class GetAllYear(generics.ListAPIView):
         return Schedules.objects.filter(year=year)
 
 class GetAllMonth(generics.ListAPIView):
-    """
-    특정 연도와 월의 모든 스케줄을 조회합니다.
-    URL 예시: /schedules/<year>/<month>/
-    """
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
@@ -53,9 +41,6 @@ class GetAllMonth(generics.ListAPIView):
 
 
 class BaseEventListView(generics.ListAPIView):
-    """
-    특정 타이틀(행사 종류)을 가진 스케줄을 필터링하는 베이스 클래스
-    """
     serializer_class = ScheduleSerializer
     event_title = None
 
@@ -82,22 +67,7 @@ class GetHolidays(BaseEventListView):
 class GetAlldays(BaseEventListView):
     event_title = None
 
-
-class GetSummaryClassDays(generics.RetrieveAPIView):
-    """
-    학년(grade)을 기준으로 Summary를 조회합니다.
-    URL 예시: /summary/<int:grade>/
-    """
-    queryset = Summary.objects.all()
-    serializer_class = SummarySerializer
-    lookup_field = 'grade'
-
-
 class UpdateSchedule(generics.RetrieveUpdateAPIView):
-    """
-    특정 스케줄 하나를 수정합니다. (PUT/PATCH)
-    URL 예시: /schedule/update/<int:pk>/
-    """
     queryset = Schedules.objects.all()
     serializer_class = ScheduleSerializer
 
